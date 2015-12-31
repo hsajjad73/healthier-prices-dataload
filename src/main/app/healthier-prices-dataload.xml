@@ -50,20 +50,25 @@ payload map
     <flow  name="load-pharmacy-prods">
     	<file:inbound-endpoint doc:name="Poll files" path="src/main/resources/inputpharma" responseTimeout="10000"/>
         <choice doc:name="Choice">
-            <when expression="#[groovy:message.getInboundProperty('originalFilename').equalsIgnoreCase('Pharmacy1.csv')]">
-                <set-property propertyName="PharmacyId" value="Pharmacy1" doc:name="Pharma1"/>
+            <when expression="#[groovy:message.getInboundProperty('originalFilename').equalsIgnoreCase('Reach.csv')]">
+                <set-property propertyName="PharmacyId" value="1"/>
+                <set-property propertyName="PharmacyName" value="Reach Pharmacy" doc:name="Reach Pharmacy"/>
             </when>
-            <when expression="#[groovy:message.getInboundProperty('originalFilename').equalsIgnoreCase('Pharmacy2.csv')]">
-                <set-property propertyName="PharmacyId" value="Pharmacy2" doc:name="Pharma2"/>
+            <when expression="#[groovy:message.getInboundProperty('originalFilename').equalsIgnoreCase('Point.csv')]">
+            	<set-property propertyName="PharmacyId" value="2"/>
+                <set-property propertyName="PharmacyName" value="Point Pharmacy" doc:name="Point Pharmacy"/>
             </when>
-            <when expression="#[groovy:message.getInboundProperty('originalFilename').equalsIgnoreCase('Pharmacy3.csv')]">
-                <set-property propertyName="PharmacyId" value="Pharmacy3" doc:name="Pharma3"/>
+            <when expression="#[groovy:message.getInboundProperty('originalFilename').equalsIgnoreCase('PharmacyNearu.csv')]">
+            	<set-property propertyName="PharmacyId" value="3"/>
+                <set-property propertyName="PharmacyName" value="Pharmacy Near U" doc:name="Pharmacy Near U"/>
             </when>
             <when expression="#[groovy:message.getInboundProperty('originalFilename').equalsIgnoreCase('Pharmacy4.csv')]">
-                <set-property propertyName="PharmacyId" value="Pharmacy4" doc:name="Pharma4"/>
+            	<set-property propertyName="PharmacyId" value="4"/>
+                <set-property propertyName="PharmacyName" value="Pharmacy4" doc:name="Pharma4"/>
             </when>
             <when expression="#[groovy:message.getInboundProperty('originalFilename').equalsIgnoreCase('Pharmacy5.csv')]">
-                <set-property propertyName="PharmacyId" value="Pharmacy5" doc:name="Pharma5"/>
+            	<set-property propertyName="PharmacyId" value="5"/>
+                <set-property propertyName="PharmacyName" value="Pharmacy5" doc:name="Pharma5"/>
             </when>
             <otherwise>
 				<logger level="ERROR" message="Boom!" doc:name="Logger"/>            
@@ -77,12 +82,17 @@ payload map
 ---
 payload map
 {
- pharma_id : outboundProperties['PharmacyId'],
+ pharmacy : {
+ 	id : outboundProperties['PharmacyId'],
+ 	name : outboundProperties['PharmacyName']
+ 	},
  prod_id : $.PRODUCTCODE,
  name : $.PRODUCT,
- size : $.QUANTITY,
- rrp: $.RRP,
- price: $.PRICE
+ size : $.SIZE,
+ rrp: $.LIST_PRICE,
+ price: $.PRICE,
+ img_lg: $.IMAGE320,
+ ex_link: $.EXTERNAL_LINK
 }
 ]]></dw:set-payload>
         </dw:transform-message>
