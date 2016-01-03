@@ -51,23 +51,23 @@ payload map
     	<file:inbound-endpoint doc:name="Poll files" path="src/main/resources/inputpharma" responseTimeout="10000"/>
         <choice doc:name="Choice">
             <when expression="#[groovy:message.getInboundProperty('originalFilename').equalsIgnoreCase('Reach.csv')]">
-                <set-property propertyName="PharmacyId" value="1"/>
+                <set-property propertyName="PharmacyId" value="1" doc:name="Property"/>
                 <set-property propertyName="PharmacyName" value="Reach Pharmacy" doc:name="Reach Pharmacy"/>
             </when>
             <when expression="#[groovy:message.getInboundProperty('originalFilename').equalsIgnoreCase('Point.csv')]">
-            	<set-property propertyName="PharmacyId" value="2"/>
+            	<set-property propertyName="PharmacyId" value="2" doc:name="Property"/>
                 <set-property propertyName="PharmacyName" value="Point Pharmacy" doc:name="Point Pharmacy"/>
             </when>
             <when expression="#[groovy:message.getInboundProperty('originalFilename').equalsIgnoreCase('PharmacyNearu.csv')]">
-            	<set-property propertyName="PharmacyId" value="3"/>
+            	<set-property propertyName="PharmacyId" value="3" doc:name="Property"/>
                 <set-property propertyName="PharmacyName" value="Pharmacy Near U" doc:name="Pharmacy Near U"/>
             </when>
             <when expression="#[groovy:message.getInboundProperty('originalFilename').equalsIgnoreCase('Pharmacy4.csv')]">
-            	<set-property propertyName="PharmacyId" value="4"/>
+            	<set-property propertyName="PharmacyId" value="4" doc:name="Property"/>
                 <set-property propertyName="PharmacyName" value="Pharmacy4" doc:name="Pharma4"/>
             </when>
             <when expression="#[groovy:message.getInboundProperty('originalFilename').equalsIgnoreCase('Pharmacy5.csv')]">
-            	<set-property propertyName="PharmacyId" value="5"/>
+            	<set-property propertyName="PharmacyId" value="5" doc:name="Property"/>
                 <set-property propertyName="PharmacyName" value="Pharmacy5" doc:name="Pharma5"/>
             </when>
             <otherwise>
@@ -110,14 +110,14 @@ payload map
             <dw:set-payload><![CDATA[%dw 1.0
 
 %output application/java
+%function word(str) str splitBy ","
 ---
 payload map
 {
- name : $.PRODUCT,
- suggest : 
+ name : $.PRODUCTCODE,
+ name_suggest : 
  {
-   input : [$.KEYWORD],
-   weight : 34
+   input : word(lower $.KEYWORDS)
  }
 }
 ]]></dw:set-payload>
@@ -125,7 +125,7 @@ payload map
         <foreach doc:name="For Each">
             <json:object-to-json-transformer doc:name="Object to JSON"/>
             <logger message="saving objects: #[payload]" level="INFO" doc:name="Log objects to save"/>
-            <http:request config-ref="ElasticSearch_Rest_Configuration" path="keywords/keyword?refresh=true" method="POST" doc:name="Send to Keywords index"/>
+            <http:request config-ref="ElasticSearch_Rest_Configuration" path="keywords/product" method="POST" doc:name="Send to Keywords index"/>
         </foreach>
     </flow>    
 </mule>
